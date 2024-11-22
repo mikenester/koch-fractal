@@ -1,0 +1,3 @@
+DEBUG = False
+LEVEL = 6
+LENGTH = 5
