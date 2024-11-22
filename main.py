@@ -13,13 +13,16 @@ from helpers import (
 import config
 
 
-def draw_line(a_coor: List[float], b_coor: List[float], level: int, ax):
-    if level == 0:
+def draw_line(a_coor: List[float], b_coor: List[float], iterations: int, ax):
+    if iterations == 0:
         xpoints = np.array([a_coor[0], b_coor[0]])
         ypoints = np.array([a_coor[1], b_coor[1]])
-        ax.plot(xpoints, ypoints)
+        if config.MULTICOLOR:
+            ax.plot(xpoints, ypoints)
+        else:
+            ax.plot(xpoints, ypoints, color=config.COLOR)
         return
-    level -= 1
+    iterations -= 1
     length = get_length(a_coor, b_coor) / 3
     theta = get_theta(a_coor, b_coor)
     new_a_coor = a_coor
@@ -28,24 +31,28 @@ def draw_line(a_coor: List[float], b_coor: List[float], level: int, ax):
     new_c_coor = get_third_vertex_coordinates(new_b_coor, new_d_coor)
     new_e_coor = b_coor
 
-    draw_line(new_a_coor, new_b_coor, level, ax)
-    draw_line(new_b_coor, new_c_coor, level, ax)
-    draw_line(new_c_coor, new_d_coor, level, ax)
-    draw_line(new_d_coor, new_e_coor, level, ax)
+    draw_line(new_a_coor, new_b_coor, iterations, ax)
+    draw_line(new_b_coor, new_c_coor, iterations, ax)
+    draw_line(new_c_coor, new_d_coor, iterations, ax)
+    draw_line(new_d_coor, new_e_coor, iterations, ax)
 
 
 def main():
-    level = config.LEVEL
-    if level < 1:
-        raise ValueError("LEVEL must be a positive integer.")
+    iterations = config.ITERATIONS
+    if iterations < 0:
+        raise ValueError("ITERATIONS must be a positive integer.")
 
     fig, ax = plt.subplots()
 
     # starting coordinates
-    a_coor = [0, 0]
-    b_coor = [config.LENGTH, 0]
+    init_length = 1
+    a_coor = [-0.5 * init_length, init_length / (2 * sqrt(3))]  # center on origin
+    b_coor = get_straight_line_coordinates(a_coor, init_length, 0)
+    c_coor = get_straight_line_coordinates(a_coor, init_length, -pi / 3)
 
-    draw_line(a_coor, b_coor, level, ax)
+    draw_line(a_coor, b_coor, iterations, ax)
+    draw_line(b_coor, c_coor, iterations, ax)
+    draw_line(c_coor, a_coor, iterations, ax)
 
     ax.set_aspect("equal", adjustable="datalim")
     ax.autoscale()
