@@ -27,9 +27,9 @@ def get_theta(a_coor: List[int], b_coor: List[int]) -> Tuple[int]:
     b_x = b_coor[0]
     b_y = b_coor[1]
 
-    if b_x == a_x and b_y > 0:
+    if b_x == a_x and b_y > a_y:
         theta = pi / 2
-    elif b_x == a_x and b_y < 0:
+    elif b_x == a_x and b_y < a_y:
         theta = 3 * pi / 2
     elif b_y >= a_y and b_x > a_x:
         # quadrant 1
